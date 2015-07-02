@@ -1,0 +1,29 @@
+<?xml version="1.0" ?>
+<configuration>
+    <title>重金属</title>
+    <fields>
+        <field name="OBJECTID" alias="ID" visible="true"/>
+        <field name="bh" alias="编号" visible="true"/>
+        <field name="wz" alias="地点" visible="true"/>
+        <field name="jd" alias="经度" visible="true"/>
+        <field name="wd" alias="维度" visible="true"/>
+        <field name="tu_pb" alias="土壤Pb" visible="true"/>
+        <field name="tu_cd" alias="土壤Cd" visible="true"/>
+        <field name="tu_as" alias="土壤As" visible="true"/>
+        <field name="tu_cr" alias="土壤Cr" visible="true"/>
+        <field name="tu_hg" alias="土壤Hg" visible="true"/>
+        <field name="ph" alias="pH" visible="true"/>
+        <field name="nong_pb" alias="农产品Pb" visible="true"/>
+        <field name="nong_cd" alias="农产品Cd" visible="true"/>
+        <field name="nong_as" alias="农产品As" visible="true"/>
+        <field name="nong_cr" alias="农产品Cr" visible="true"/>
+        <field name="nong_hg" alias="农产品Hg" visible="true"/>  
+        <field name="type" alias="作物种类" visible="true"/>
+        <field name="isok" alias="是否超标" visible="true"/>     
+    </fields>
+    <medias>
+        <media type="barchart" title="重金属条形图" chartfields="tu_pb,tu_cd,tu_as,tu_as,tu_cr,tu_hg"/>
+    </medias>
+    <showattachments>false</showattachments>
+    <showrelatedrecords>false</showrelatedrecords>
+</configuration>

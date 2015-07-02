@@ -1,0 +1,57 @@
+<?xml version="1.0" ?>
+<configuration>
+    <description/>
+    <taskurl>http://192.168.13.39:6080/arcgis/rest/services/idw_all/GPServer/idw</taskurl>
+    <helpurl>http://192.168.13.39:6080/arcgis/rest/directories/arcgisoutput/idw_all_GPServer/idw_all/idw.htm</helpurl>
+    <autosubmit>false</autosubmit>
+    <shareresults>true</shareresults>
+    <inputparams>
+        <param type="featurerecordset" name="polygon" geometrytype="polygon"  required="true" visible="true" label="选择区域">
+            <renderer type="simple">
+                <defaultsymbol type="simplefill" alpha="0.5" color="0x3FAFDC">
+                    <outline color="0x000000" width="2"/>
+                </defaultsymbol>
+            </renderer>
+        </param>
+        <param type="string" name="Z_value_field" required="true" visible="true" label="插值对象" defaultvalue="tu_pb">
+            <choicelist>
+                <choice value="tu_pb"/>
+                <choice value="tu_cd"/>
+                <choice value="tu_as"/>
+                <choice value="tu_cr"/>
+                <choice value="tu_hg"/>
+                <choice value="nong_pb"/>
+                <choice value="nong_cd"/>
+                <choice value="nong_as"/>
+                <choice value="nong_cr"/>
+                <choice value="nong_hg"/>
+            </choicelist>
+        </param>
+        
+        <param type="multivalue:string" name="interpolation_methods" required="true" visible="true" label="插值方法" defaultvalue="克里金插值">
+            <choicelist>
+                <choice value="反距离插值" item2="http://192.168.13.39:6080/arcgis/rest/services/idw_all/GPServer/idw" isGeoInterpolation="false">
+                	<!-- 添加此插值方法，对应的参数 -->
+                	<param name="Power" label="距离指数" defaultvalue="2" />
+                </choice>
+                
+                <choice value="局部多项式插值" item2="http://192.168.13.39:6080/arcgis/rest/services/wangchao_LPI/GPServer/wangchao_LPI" isGeoInterpolation="false"/>
+                <choice value="全局多项式插值" item2="http://192.168.13.39:6080/arcgis/rest/services/wangchao_GPI/GPServer/wangchao_GPI" isGeoInterpolation="false"/>
+                <choice value="径向基函数插值" item2="http://192.168.13.39:6080/arcgis/rest/services/wangchao_RBF/GPServer/wangchao_RBF" isGeoInterpolation="false"/>
+                <choice value="简单克里金插值" item2="http://192.168.13.39:6080/arcgis/rest/services/Model42/GPServer/kriging_interpolation2" isGeoInterpolation="true"/>
+            </choicelist>
+        </param>
+
+    </inputparams>
+    <outputparams>
+         <param type="rasterdatalayer" name="ClassifiedLayer" required="true" visible="true" label="ClassifiedLayer"/>
+          <param type="recordset" name="CrossValidationOutput_View" required="true" visible="true" label="交叉验证结果">
+        	<!-- 定义表格中的列 -->
+         	<field name="FID" label="FID" />
+
+         	<field name="Predicted" label="预测值" />
+         	<field name="Error" label="误差" />
+         </param>
+    </outputparams>
+    <layerorder>ClassifiedLayer,StretchedLayer,DiscreteColorLayer</layerorder>
+</configuration>

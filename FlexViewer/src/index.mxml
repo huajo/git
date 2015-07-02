@@ -1,0 +1,294 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2010-2011 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+<s:Application xmlns:fx="http://ns.adobe.com/mxml/2009"
+			   xmlns:s="library://ns.adobe.com/flex/spark"
+			   xmlns:mx="library://ns.adobe.com/flex/mx"
+			   xmlns:viewer="com.esri.viewer.*"
+			   xmlns:managers="com.esri.viewer.managers.*"
+			   initialize="initializeHandler(event)"
+			   creationComplete="application_creationCompleteHandler(event)"
+			   pageTitle="系统">
+	
+	<fx:Script>
+		<![CDATA[
+			import com.esri.viewer.AppEvent;
+			
+			import mx.controls.Alert;
+			import mx.core.IVisualElement;
+			import mx.events.FlexEvent;
+			import mx.events.ModuleEvent;
+			import mx.modules.IModuleInfo;
+			import mx.modules.ModuleManager;
+			import mx.rpc.Fault;
+			import mx.rpc.Responder;
+			import mx.rpc.events.FaultEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;	
+			
+			
+			private var mInfo:IModuleInfo=null;
+			private var _webService_wsdl:String="";
+			public static const DEFAULT_CONFIG_FILE:String = "config-server.xml";
+			public  var cookie:SharedObject;
+			
+			private function initializeHandler(event:FlexEvent):void
+			{
+				cookie= SharedObject.getLocal("xiangtan","/");  
+				loadConfig();
+			}
+			
+			
+			
+			protected function Submit_clickHandler(event:MouseEvent):void
+			{
+				
+				webService.login(txtUname.text, txtPwd.text);
+				
+//				if(txtUname.text == "admin"&&txtPwd.text=="admin")
+//				{
+//					this.currentState = "index";
+//					//viewerContainer.removeAllElements();
+//					ViewerContainer.configFile = "config-admin.xml"; 
+//				}else if(txtUname.text == "user"&&txtPwd.text=="user"){
+//					this.currentState = "index";
+//					viewerContainer.config= "config-user.xml";
+//					
+//				}else{
+//					Alert.show("帐号密码错误！");
+//				}
+//				txtPwd.text="";
+				
+			}
+			private function onResult(event:ResultEvent):void
+			{     
+				var Userinfo_lv:Object;
+				Userinfo_lv = event.result;
+				if(Userinfo_lv!=null){
+					Alert.show(Userinfo_lv.name + "登录成功！");
+					// 创建一个本地保存数据的对象s     
+					cookie.data.user = Userinfo_lv.name;  
+					//Alert.show(Userinfo_lv.key);
+					cookie.data.key = Userinfo_lv.key;  
+					cookie.data.userId = Userinfo_lv.id;  
+					cookie.flush(); //提交保存  
+					this.currentState = "index";
+				}else{
+					Alert.show("账号或密码错误");
+				}
+			}			
+			
+			private function modulError(e:ModuleEvent):void{  
+				Alert.show('modulError');  
+			}  
+			private function modulProgress(e:ModuleEvent):void{  
+				log.text=e.bytesLoaded+'%'+e.bytesTotal;  
+			}  
+			private function modulReady(e:ModuleEvent):void{  
+				var moduleInfo:IModuleInfo = e.currentTarget as IModuleInfo;  
+				var b:IVisualElement=e.module.factory.create() as IVisualElement; 
+				
+				g.addElement(b);  
+			} 
+			
+			private function GenerateCheckCode():String{
+				var ran:Number;
+				var number:Number;
+				var code:String;
+				var checkcode:String="";
+				//生成四为随机数
+				for(var i:int=0;i<4;i++){
+					ran=Math.random();
+					number=Math.round(ran*1000);
+					if(number%2==0)
+						code=String.fromCharCode(48+(number));
+					else
+						code=String.fromCharCode(65+(number));
+					checkcode+=code;
+				}
+				return checkcode;
+			}
+			
+			protected function application_creationCompleteHandler(event:FlexEvent):void
+			{
+				webService.loadWSDL();
+				if(cookie.data.user == ""||!cookie.data.hasOwnProperty("user")){
+				  setTimeout(login, 2000);
+				}
+				
+				
+			
+				
+			}
+			function login(){
+				this.currentState = "login";
+				pnlLogin.addEventListener(KeyboardEvent.KEY_DOWN,function (event:KeyboardEvent){
+					if(event.keyCode == Keyboard.ENTER)//Enter键  
+					{  
+						Submit_clickHandler(null);
+					}  
+					if(event.keyCode==27)//Esc键  
+					{  
+						//ESC事件  
+					} 
+				
+				});
+			}
+			
+			private function loadConfig():void
+			{
+				var configService:HTTPService = new HTTPService();
+				configService.url = DEFAULT_CONFIG_FILE;
+				configService.resultFormat = HTTPService.RESULT_FORMAT_TEXT;
+				configService.addEventListener(ResultEvent.RESULT, configService_resultHandler);
+				configService.addEventListener(FaultEvent.FAULT, configService_faultHandler);
+				configService.send();
+			}
+			
+			private function configService_faultHandler(event:FaultEvent):void
+			{
+				var sInfo:String = "";
+				
+				if (event.fault.rootCause is IOErrorEvent)
+				{
+					var ioe:IOErrorEvent = event.fault.rootCause as IOErrorEvent;
+					// Missing config file
+					if (ioe.errorID == 2032)
+					{
+						sInfo += 'missingConfigFileText' + "\n\n";
+					}
+					else
+					{
+						// some other IOError
+						sInfo += event.fault.rootCause + "\n\n";
+					}
+				}
+				
+				if (event.fault.rootCause is SecurityErrorEvent)
+				{
+					var sec:SecurityErrorEvent = event.fault.rootCause as SecurityErrorEvent;
+					// config file with crossdomain issue
+					if (sec.errorID == 2048)
+					{
+						sInfo += 'configFileCrossDomain'+ "\n\n";
+					}
+						// some other Security error
+					else
+					{
+						sInfo += event.fault.rootCause + "\n\n";
+					}
+				}
+				
+				if (event.statusCode) // e.g. 404 - Not Found - http://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+				{
+					sInfo += 'httpResponseStatus'+ "\n\n";
+				}
+				
+				sInfo += event.fault.faultCode + "\n\n";
+				sInfo += event.fault.faultString + "\n\n";
+				sInfo += event.fault.faultDetail;
+				Alert.show(sInfo);
+			}
+			
+			private function configService_resultHandler(event:ResultEvent):void
+			{
+				try
+				{
+					//parse main configuration file to create config data object
+					var configXML:XML = XML(event.result);
+					_webService_wsdl = configXML.login_url;
+					webService.wsdl = _webService_wsdl;
+					
+				}catch (error:Error)
+				{
+					Alert.show(error.message);
+				}
+			}
+			
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+		<!-- 将非可视元素（例如服务、值对象）放在此处 -->
+		<mx:WebService 	id="webService" useProxy="false" showBusyCursor="true" wsdl="{_webService_wsdl}">
+			<mx:operation name="login" result="onResult(event)" />
+		</mx:WebService>
+	</fx:Declarations>	
+	
+	<s:states>
+		
+		<s:State name="index" />
+		<s:State name="login" />
+		
+		
+	</s:states>
+	
+	<fx:Style source="defaults.css"/>
+	
+	<fx:Metadata>
+		[ResourceBundle("ViewerStrings")]
+	</fx:Metadata>
+	
+	<viewer:ViewerContainer id="viewerContainer" includeIn="index" >
+		<viewer:configManager>
+			<managers:ConfigManager id="configManager"/>
+		</viewer:configManager>
+		<viewer:dataManager>
+			<managers:DataManager id="dataManager"/>
+		</viewer:dataManager>
+		<viewer:mapManager>
+			<managers:MapManager id="mapManager"/>
+		</viewer:mapManager>
+		<viewer:uiManager>
+			<managers:UIManager id="uiManager"/>
+		</viewer:uiManager>
+		<viewer:widgetManager>
+			<managers:WidgetManager id="widgetManager"/>
+		</viewer:widgetManager>
+	</viewer:ViewerContainer>
+	
+	
+	<s:BorderContainer id="MainContainer" includeIn="login" width="100%" height="100%"
+					   backgroundColor="#5B4F4F">
+		<s:Panel id="pnlLogin"
+				 width="300"
+				 height="200"
+				 title="登录"
+				 horizontalCenter="0"
+				 verticalCenter="0">
+			<s:layout>
+				<s:VerticalLayout horizontalAlign="center"
+								  verticalAlign="middle"/>
+			</s:layout>
+			<s:HGroup gap="5" horizontalAlign="center">
+				<s:Label text="用户名:" id="lblName"/>
+				<s:TextInput id="txtUname"/>
+			</s:HGroup>
+			<s:HGroup gap="5" horizontalAlign="center">
+				<s:Label text="密    码:" id="lblPwd"/>
+				<s:TextInput id="txtPwd" displayAsPassword="true"/>
+			</s:HGroup>
+			<s:HGroup horizontalAlign="center">
+				<s:Button id="Submit" label="登录" click="Submit_clickHandler(event)"
+						  />
+			</s:HGroup>
+			<s:HGroup horizontalAlign="center" id="g">
+				<s:Label id="log"/> 
+			</s:HGroup>
+		</s:Panel>
+	</s:BorderContainer>
+</s:Application>

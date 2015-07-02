@@ -1,0 +1,11 @@
+<?xml version="1.0" ?>
+<configuration label="北京农业质量标准与检测技术研究中心">
+    <imageurl>assets/images/globe.png</imageurl>
+    <linkurl>#</linkurl>
+    <tooltip>北京农业质量标准与检测技术研究中心</tooltip>
+</configuration>
+
+<!--
+    See Static Image widget tag reference at
+    http://links.esri.com/staticimagewidget
+-->

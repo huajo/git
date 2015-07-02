@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<configuration>
+    <description/>
+    <taskurl>http://192.168.13.39:6080/arcgis/rest/services/idw_all/GPServer/idw</taskurl>
+    <helpurl>http://192.168.13.39:6080/arcgis/rest/directories/arcgisoutput/idw_class_GPServer/idw_class/idw-class.htm </helpurl>
+    <autosubmit>false</autosubmit>
+    <shareresults>true</shareresults>
+    <inputparams>
+        <param type="featurerecordset" name="polygon" geometrytype="polygon"  required="true" visible="true" label="选择区域">
+            <renderer type="simple">
+                <defaultsymbol type="simplefill" alpha="0.5" color="0x3FAFDC">
+                    <outline color="0x000000" width="2"/>
+                </defaultsymbol>
+            </renderer>
+        </param>
+        <param type="string" name="Z_value_field" required="true" visible="true" label="插值对象" defaultvalue="tu_pb">
+            <choicelist>
+                <choice value="tu_pb"/>
+                <choice value="tu_cd"/>
+                <choice value="tu_as"/>
+                <choice value="tu_cr"/>
+                <choice value="tu_hg"/>
+                <choice value="nong_pb"/>
+                <choice value="nong_cd"/>
+                <choice value="nong_as"/>
+                <choice value="nong_cr"/>
+                <choice value="nong_hg"/>
+            </choicelist>
+        </param>
+        <param type="double" name="Power" required="false" visible="true" label="距离指数" defaultvalue="2">
+        </param>
+       <param type="string" name="symbol_flag" required="true" visible="true" label="渲染方式" defaultvalue="idw_class">
+        </param> 
+    </inputparams>
+     <outputparams>
+         <param type="rasterdatalayer" name="result" required="true" visible="true" label="插值结果">
+          </param>
+    </outputparams>
+    <layerorder></layerorder>
+</configuration>

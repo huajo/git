@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+///////////////////////////////////////////////////////////////////////////
+// Copyright (c) 2011 Esri. All Rights Reserved.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+///////////////////////////////////////////////////////////////////////////
+-->
+
+<s:ItemRenderer xmlns:fx="http://ns.adobe.com/mxml/2009"
+                xmlns:s="library://ns.adobe.com/flex/spark"
+                xmlns:mx="library://ns.adobe.com/flex/mx"
+                width="100%"
+                autoDrawBackground="true">
+	<fx:Script>
+		<![CDATA[
+			import mx.collections.ArrayCollection;
+			import mx.collections.ArrayList;
+			import mx.containers.Form;
+			import mx.containers.FormItem;
+			import mx.controls.Button;
+			import mx.controls.TextInput;
+			import mx.events.CloseEvent;
+			import mx.managers.PopUpManager;
+			
+			// 创建窗体对象
+			private var pop:ParamSetWindow;   
+			
+ 
+
+			protected function multiValueCheckBox_changeHandler(event:Event):void
+			{
+				if(data.selected && data.params.length>0){
+					/// 创建弹出窗体  
+					pop = ParamSetWindow(PopUpManager.createPopUp(this, ParamSetWindow, false)); 
+					
+					pop.title = "参数设置";
+					
+					pop.showCloseButton = true;
+					pop.addEventListener(CloseEvent.CLOSE, titleWindow_close); 
+					
+					var form:Form = new Form();
+					
+					
+					
+					
+					//创建参数控件
+					for each(var param:Object in data.params){
+						var paramItem:FormItem = new FormItem();
+						paramItem.label = param.label;
+						//创建文本输入框
+						var textinput:TextInput = new TextInput();
+						textinput.name = param.name;
+						textinput.text = param.defaultvalue;
+						
+						pop.items.addItem({"label":param.label,"value":textinput});
+						
+						//将文本输入框作为FormItem的字控件
+						paramItem.addElement(textinput);
+						
+						//将formItem加入到Form中
+						form.addElement(paramItem);
+					}
+					
+					//创建按钮
+					var item:FormItem = new FormItem();
+					var button:Button = new Button();
+					button.label = "确定"
+					button.addEventListener(MouseEvent.CLICK,btn_click)
+					item.addElement(button);
+					
+					form.addElement(item);
+					
+					pop.addElement(form);
+				}else{
+					details.text="";
+				}
+				
+			}
+			
+			 //设置参数按钮单击事件  
+			private function btn_click(e:MouseEvent):void  
+			{  
+							
+				var detailStr:String = "";
+				for each(var current:Object in pop.items){
+					detailStr += current.label+":"+(current.value as TextInput).text+"     ";
+					for each(var dataItem:Object in data.params){
+						if(dataItem.label == current.label){
+							dataItem.value = (current.value as TextInput).text;
+						}
+					}
+				} 
+				details.text = detailStr;  
+				// 移除弹出窗体  
+				PopUpManager.removePopUp(pop);  
+			}
+			
+			private function titleWindow_close(evt:CloseEvent):void { 
+				PopUpManager.removePopUp(pop); 
+			} 
+
+		]]>
+	</fx:Script>
+	<s:HGroup>
+		<s:CheckBox id="multiValueCheckBox"
+					label="{data.item}"
+					selected="@{data.selected}" change="multiValueCheckBox_changeHandler(event)"/>
+		<s:Label id="details" color="red"/>
+	</s:HGroup>
+
+	
+</s:ItemRenderer>

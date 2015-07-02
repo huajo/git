@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<configuration>
+<layersettings>
+
+		
+		<layer name="重金属"> <!-- Overwriting layer settings for a feature layer -->
+			<fields>
+		        <field name="bh" alias="编号" />
+		        <field name="wz" alias="地点" />
+		        <field name="jd" alias="经度" />
+		        <field name="wd" alias="维度" />
+		        <field name="tu_pb" alias="土壤Pb" />
+		        <field name="tu_cd" alias="土壤Cd" />
+		        <field name="tu_as" alias="土壤As" />
+		        <field name="tu_cr" alias="土壤Cr" />
+		        <field name="tu_hg" alias="土壤Hg" />
+		        <field name="ph" alias="pH" />
+		        <field name="nong_pb" alias="农产品Pb" />
+		        <field name="nong_cd" alias="农产品Cd" />
+		        <field name="nong_as" alias="农产品As" />
+		        <field name="nong_cr" alias="农产品Cr" />
+		        <field name="nong_hg" alias="农产品Hg" />  
+		        <field name="type" alias="作物种类" />
+		        <field name="isok" alias="是否超标" />
+			</fields>
+		</layer>
+	</layersettings>
+<excludelayer>-</excludelayer>
+</configuration>
+
+<!-- See Attribute Table widget documentation at http://links.esri.com/attributetablewidget -->

@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<configuration>
+    <highlightcolor>3368601</highlightcolor>
+    <labels>
+        <layerselectionlabel>选择图层</layerselectionlabel>
+        <drawtoolmenulabel>选择绘制工具</drawtoolmenulabel>
+    </labels>
+    <layers>
+        <layer label="重金属">
+            <labelfield>bh</labelfield>
+            <fields>
+		        <field name="OBJECTID" alias="ID" visible="true"/>
+		        <field name="bh" alias="编号" visible="true"/>
+		        <field name="wz" alias="地点" visible="true"/>
+		        <field name="jd" alias="经度" visible="true"/>
+		        <field name="wd" alias="维度" visible="true"/>
+		        <field name="tu_pb" alias="土壤Pb" visible="true"/>
+		        <field name="tu_cd" alias="土壤Cd" visible="true"/>
+		        <field name="tu_as" alias="土壤As" visible="true"/>
+		        <field name="tu_cr" alias="土壤Cr" visible="true"/>
+		        <field name="tu_hg" alias="土壤Hg" visible="true"/>
+		        <field name="ph" alias="pH" visible="true"/>
+		        <field name="nong_pb" alias="农产品Pb" visible="true"/>
+		        <field name="nong_cd" alias="农产品Cd" visible="true"/>
+		        <field name="nong_as" alias="农产品As" visible="true"/>
+		        <field name="nong_cr" alias="农产品Cr" visible="true"/>
+		        <field name="nong_hg" alias="农产品Hg" visible="true"/>  
+		        <field name="type" alias="作物种类" visible="true"/>
+		        <field name="isok" alias="是否超标" visible="true"/> 
+            </fields>
+            <medias>
+<!--                 <media chartfields="tu_cd" title="土壤Cd" caption="Cd含量" type="barchart"/>
+                <media chartfields="tu_as" title="土壤As" type="columnchart"/> -->
+                <media chartfields="tu_cd,tu_as,tu_cr" title="tu_cd,tu_as,tu_cr" type="linechart"/>
+                <media chartfields="tu_hg" title="土壤Hg" type="piechart"/>
+
+            </medias>
+        </layer>
+    </layers>
+</configuration>

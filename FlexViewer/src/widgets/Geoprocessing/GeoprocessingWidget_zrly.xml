@@ -1,0 +1,40 @@
+<?xml version="1.0" ?>
+<configuration>
+    <description/>
+    <taskurl>http://192.168.13.39:6080/arcgis/rest/services/NaturalNeighbor/GPServer/NaturalNeighbor</taskurl>
+    <helpurl>http://192.168.13.39:6080/arcgis/rest/directories/arcgisoutput/NaturalNeighbor_GPServer/NaturalNeighbor/NaturalNeighbor.htm</helpurl>
+    <autosubmit>false</autosubmit>
+    <shareresults>true</shareresults>
+    <inputparams>
+        <param type="featurerecordset" name="polygon" geometrytype="polygon"  required="true" visible="true" label="选择区域">
+            <renderer type="simple">
+                <defaultsymbol type="simplefill" alpha="0.5" color="0x3FAFDC">
+                    <outline color="0x000000" width="2"/>
+                </defaultsymbol>
+            </renderer>
+        </param>
+<!--         <param type="string" name="Reclassification" required="true" visible="true" label="Reclassification" defaultvalue="0 0.16600000000000001 1;0.16600000000000001 0.59799999999999998 2;0.59799999999999998 26 3"/> -->
+        <param type="string" name="Z_value_field" required="true" visible="true" label="插值对象" defaultvalue="tu_pb">
+            <choicelist>
+                <choice value="tu_pb"/>
+                <choice value="tu_cd"/>
+                <choice value="tu_as"/>
+                <choice value="tu_cr"/>
+                <choice value="tu_hg"/>
+                <choice value="nong_pb"/>
+                <choice value="nong_cd"/>
+                <choice value="nong_as"/>
+                <choice value="nong_cr"/>
+                <choice value="nong_hg"/>
+            </choicelist>
+        </param>
+        <param type="double" name="Power" required="false" visible="true" label="距离指数" defaultvalue="2">
+        </param>
+    </inputparams>
+    <outputparams>
+         <param type="rasterdatalayer" name="ClassifiedLayer" required="true" visible="true" label="ClassifiedLayer"/>
+<!--          <param type="rasterdatalayer" name="StretchedLayer" required="true" visible="false" label="StretchedLayer"/>
+         <param type="rasterdatalayer" name="DiscreteColorLayer" required="true" visible="false" label="DiscreteColorLayer"/> -->
+    </outputparams>
+    <layerorder>ClassifiedLayer,StretchedLayer,DiscreteColorLayer</layerorder>
+</configuration>
